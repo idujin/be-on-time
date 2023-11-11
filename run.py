@@ -1,11 +1,12 @@
-import gradio as gr
-import gspread
-
 import logging
+
+import gradio as gr
+from gspread_editor import GSpreadEditor
+import gspread
 
 import constants
 from dateman import DateManager
-from gspread_editor import GSpreadEditor
+
 
 # Enable logging
 logging.basicConfig(
@@ -41,13 +42,37 @@ with gr.Blocks() as demo:
         custom_minute = gr.Number(label="MM", minimum= 0, maximum=60)
     test_result = gr.Textbox(label="", placeholder= "Welcome!")
 
-    if(custom_checker):
-        btn0.click(geditor.check_in, inputs=[btn0, excuse_radio, custom_checker, custom_hour, custom_minute], outputs=[test_result])
-        btn1.click(geditor.check_in, inputs=[btn1, excuse_radio, custom_checker, custom_hour, custom_minute], outputs=[test_result])
-        btn2.click(geditor.check_in, inputs=[btn2, excuse_radio, custom_checker, custom_hour, custom_minute], outputs=[test_result])
-    else: 
-        btn0.click(geditor.check_in, inputs=[btn0, excuse_radio], outputs=[test_result])
-        btn1.click(geditor.check_in, inputs=[btn1, excuse_radio], outputs=[test_result])
-        btn2.click(geditor.check_in, inputs=[btn2, excuse_radio], outputs=[test_result])
-    
+    if custom_checker:
+        btn0.click(
+            geditor.check_in,
+            inputs=[btn0, excuse_radio, custom_checker, custom_hour, custom_minute],
+            outputs=[test_result],
+            api_name="check_in_yujin")
+        btn1.click(
+            geditor.check_in,
+            inputs=[btn1, excuse_radio, custom_checker, custom_hour, custom_minute],
+            outputs=[test_result],
+            api_name="check_in_aeri")
+        btn2.click(
+            geditor.check_in,
+            inputs=[btn2, excuse_radio, custom_checker, custom_hour, custom_minute],
+            outputs=[test_result],
+            api_name="check_in_jieun")
+    else:
+        btn0.click(
+            geditor.check_in,
+            inputs=[btn0, excuse_radio],
+            outputs=[test_result],
+            api_name="check_in_yujin")
+        btn1.click(
+            geditor.check_in,
+            inputs=[btn1, excuse_radio],
+            outputs=[test_result],
+            api_name="check_in_aeri")
+        btn2.click(
+            geditor.check_in,
+            inputs=[btn2, excuse_radio],
+            outputs=[test_result],
+            api_name="check_in_jieun")
+
 demo.launch(server_name="0.0.0.0", auth=(constants.USER_ID, constants.PASSWORD))
