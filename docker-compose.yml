@@ -1,0 +1,9 @@
+services:
+  gradio-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "7860:7860"
+    volumes:
+      - ./constants:/workspace/constants
