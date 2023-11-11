@@ -30,10 +30,20 @@ with gr.Blocks() as demo:
 
     """
     )
+
+    name_dict = {
+        "유진": "check_in_yujin",
+        "애리": "check_in_aeri",
+        "지은": "check_in_jieun",
+    }
+    
+    button_dict = {}
     with gr.Row():
-        btn0 = gr.Button("유진", scale=2)
-        btn1 = gr.Button("애리", scale=2)
-        btn2 = gr.Button("지은", scale=2)
+        for name, api_name in name_dict.items():
+            btn = gr.Button(name, scale=2)
+            button_dict[api_name]= btn
+
+
     excuse_radio = gr.Radio(["없음", "운동", "재택", "연차"], label="개인사유", info="다른 사정이라도 있으셨나요?")
 
     with gr.Row():
@@ -42,37 +52,14 @@ with gr.Blocks() as demo:
         custom_minute = gr.Number(label="MM", minimum= 0, maximum=60)
     test_result = gr.Textbox(label="", placeholder= "Welcome!")
 
-    if custom_checker:
-        btn0.click(
+    for api_name, btn in button_dict.items():
+        inputs =[btn, excuse_radio]
+        if custom_checker:
+            inputs += [custom_checker, custom_hour, custom_minute]
+        btn.click(
             geditor.check_in,
-            inputs=[btn0, excuse_radio, custom_checker, custom_hour, custom_minute],
+            inputs=[btn, excuse_radio],
             outputs=[test_result],
-            api_name="check_in_yujin")
-        btn1.click(
-            geditor.check_in,
-            inputs=[btn1, excuse_radio, custom_checker, custom_hour, custom_minute],
-            outputs=[test_result],
-            api_name="check_in_aeri")
-        btn2.click(
-            geditor.check_in,
-            inputs=[btn2, excuse_radio, custom_checker, custom_hour, custom_minute],
-            outputs=[test_result],
-            api_name="check_in_jieun")
-    else:
-        btn0.click(
-            geditor.check_in,
-            inputs=[btn0, excuse_radio],
-            outputs=[test_result],
-            api_name="check_in_yujin")
-        btn1.click(
-            geditor.check_in,
-            inputs=[btn1, excuse_radio],
-            outputs=[test_result],
-            api_name="check_in_aeri")
-        btn2.click(
-            geditor.check_in,
-            inputs=[btn2, excuse_radio],
-            outputs=[test_result],
-            api_name="check_in_jieun")
+            api_name=api_name)
 
-demo.launch(server_name="0.0.0.0", auth=(constants.USER_ID, constants.PASSWORD))
+    demo.launch(server_name="0.0.0.0", auth=(constants.USER_ID, constants.PASSWORD))
