@@ -15,7 +15,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Authenticate with Google and get the sheet
-gc = gspread.service_account_from_dict(constants.GSPREAD_KEY)
+gc, authorized_user = gspread.oauth_from_dict(constants.GSPREAD_CREDENTIAL, constants.GSPREAD_AUTH_USER)
 sh = gc.open_by_url(constants.GSPREAD_URL)
 
 dateman = DateManager()

@@ -17,7 +17,8 @@ logger = logging.getLogger(__name__)
 
 class GSpreadEditor():
     def __init__(self):
-        gc = gspread.service_account_from_dict(constants.GSPREAD_KEY)
+        gc, authorized_user = gspread.oauth_from_dict(constants.GSPREAD_CREDENTIAL, constants.GSPREAD_AUTH_USER)
+
         self.sh = gc.open_by_url(constants.GSPREAD_URL)
         self.worksheet = self.sh.sheet1
         self.dateman = DateManager()
