@@ -6,4 +6,7 @@ services:
     ports:
       - "7860:7860"
     volumes:
-      - ./constants:/workspace/constants
+      - .:/workspace
+    command: bash -c "
+      sleep 5 &&
+      python /workspace/run.py"
