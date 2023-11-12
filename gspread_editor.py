@@ -33,7 +33,7 @@ class GSpreadEditor():
             self.worksheet = self.sh.worksheet(sheet_name)
         except WorksheetNotFound:
             logger.info("Worksheet %s not found. Creating a new one.", sheet_name)
-            templete = self.sh.worksheet("Template v2 (Do not edit!!)")
+            templete = self.sh.worksheet("Template v3 (Do not edit!!)")
             templete.duplicate(new_sheet_name = sheet_name)
 
         self.worksheet.update(cell, [data])
