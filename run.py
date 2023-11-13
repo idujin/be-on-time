@@ -59,9 +59,9 @@ with gr.Blocks() as demo:
             inputs += [custom_checker, custom_hour, custom_minute]
         btn.click(
             geditor.check_in,
-            inputs=[btn, excuse_radio],
+            inputs=inputs,
             outputs=[test_result],
             api_name=api_name)
 
     logger.info("Launching...")
-    demo.launch(server_name="0.0.0.0", auth=(constants.USER_ID, constants.PASSWORD))
+    demo.launch(auth=(constants.USER_ID, constants.PASSWORD))
