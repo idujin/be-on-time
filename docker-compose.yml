@@ -10,3 +10,5 @@ services:
     command: bash -c "
       sleep 5 &&
       python /workspace/run.py"
+    environment:
+      - TZ=Asia/Seoul
