@@ -64,4 +64,4 @@ with gr.Blocks() as demo:
             api_name=api_name)
 
     logger.info("Launching...")
-    demo.launch(auth=(constants.USER_ID, constants.PASSWORD))
+    demo.launch(server_name="0.0.0.0", auth=(constants.USER_ID, constants.PASSWORD))
