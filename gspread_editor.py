@@ -36,7 +36,7 @@ class GSpreadEditor():
             templete = self.sh.worksheet(constants.TEMPLATE)
             templete.duplicate(new_sheet_name = sheet_name)
 
-        self.worksheet.update(cell, [data])
+        self.worksheet.update(cell, [data],value_input_option='USER_ENTERED')
         return
 
     def _clear_options(self, start_row, start_col):
