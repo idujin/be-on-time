@@ -5,10 +5,5 @@ services:
       dockerfile: Dockerfile
     ports:
       - "7860:7860"
-    volumes:
-      - .:/workspace
-    command: bash -c "
-      sleep 5 &&
-      python /workspace/run.py"
     environment:
       - TZ=Asia/Seoul
