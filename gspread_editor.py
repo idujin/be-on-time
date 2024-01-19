@@ -62,7 +62,7 @@ class GSpreadEditor():
 
         msg = f"{user}님, 오늘은 주말입니다. 집으로 돌아가세요!"
         if(is_working_day):
-            start_row = 23 + self.dateman.get_order_busday()
+            start_row = 22 + self.dateman.get_order_busday()
 
             self._update_data("A"+str(start_row),[today])
             self._update_data(start_col +str(start_row),[check_in_time])
