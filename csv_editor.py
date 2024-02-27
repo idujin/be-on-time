@@ -83,7 +83,37 @@ class CSVEditor():
         else: # rewrite today's log
             df.iloc[-1] = new_log
             df.to_csv(file_name, header =True, mode='w')
-            
+    def get_display_csv(self, user):
+        df = self._get_csv(user)
+        year = datetime.now().date().year
+        month = datetime.now().date().month
+        return df[np.logical_and(df['year']==year, df['month']==month)]
+    
+    def get_current_score_dataframe(self, users, except_user = None):
+        scores = np.array([])
+        for user in users:
+            sc = 0
+            if except_user is None or not user in except_user:
+                sc = np.sum(self.get_user_month_score(user))
+            scores = np.append(scores, sc)
+        
+        if except_user is not None:
+            mean_score = np.round(np.sum(scores)/(len(users)-len(except_user)))
+            for i, user in enumerate(users):
+                if user in except_user:
+                    scores[i] = mean_score
+        return pd.DataFrame({ 'User': users, 'Score': scores })
+    
+    def get_user_month_score(self, user, month: int=0):
+        df = self._get_csv(user)
+        year = datetime.now().date().year
+        if month == 0:
+            month = datetime.now().date().month
+        elif month < 0 or month > 12:
+            logger.error("Invalid %d month input", month)
+            return
+        score = df[np.logical_and(df['year']==year, df['month']==month)]['score'].values
+        return score
 
     def check_in(self, user, option = "없음", is_custom = False, custom_hh=0, custom_mm=0):
         '''
