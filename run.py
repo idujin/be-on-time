@@ -76,4 +76,4 @@ pages = gr.TabbedInterface([demo, log_demo], ["Check-in", "Leader board"])
 
 if __name__ == "__main__":
     logger.info("Launching...")
-    pages.launch()
+    pages.launch(server_name="0.0.0.0", auth=(constants.USER_ID, constants.PASSWORD))
