@@ -20,7 +20,7 @@ ceditor = CSVEditor()
 
 with gr.Blocks() as log_demo:
     
-    users = ["유진", "애리", "지은"]
+    users = constants.USERS
     data_radio = gr.Radio(choices= users, label="점수 확인하기", info="사용자를 선택하세요.", interactive=True, value="유진")
     selcted_user = alt.selection_point(encodings=['color'])
     
@@ -76,4 +76,4 @@ pages = gr.TabbedInterface([demo, log_demo], ["Check-in", "Leader board"])
 
 if __name__ == "__main__":
     logger.info("Launching...")
-    pages.launch(server_name="0.0.0.0", auth=(constants.USER_ID, constants.PASSWORD))
+    pages.launch()

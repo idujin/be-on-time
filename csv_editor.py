@@ -71,7 +71,7 @@ class CSVEditor():
         
         return mean_score
 
-    def _update_csv(self, today: datetime, user:str, time:str, excuse:str, score:int):
+    def _update_csv(self, today: datetime, user:str, time:str, excuse:str, score:int, is_empty_checker = False):
         df = self._get_csv(user)
         file_name = user +'.csv'
 
@@ -80,9 +80,10 @@ class CSVEditor():
 
         if len(df) == 0 or datetime(df.iloc[-1]['year'],df.iloc[-1]['month'],df.iloc[-1]['day']).date() != today.date():
             pd.DataFrame([new_log]).to_csv(file_name, header =False, mode='a')
-        else: # rewrite today's log
+        elif not is_empty_checker: # rewrite today's log
             df.iloc[-1] = new_log
             df.to_csv(file_name, header =True, mode='w')
+
     def get_display_csv(self, user):
         df = self._get_csv(user)
         year = datetime.now().date().year
@@ -114,6 +115,24 @@ class CSVEditor():
             return
         score = df[np.logical_and(df['year']==year, df['month']==month)]['score'].values
         return score
+    
+    def daily_check_in_auto(self, users):
+        '''
+        This function is called every at 11:55 PM.
+        If user did not check-in before that time, 23:55:00 would be filled at check-in time and the score also would be -20.
+        '''
+        current_time = datetime.now()
+        holiday_name = self.dateman.get_holiday_name_kr()
+        weekday = current_time.date().weekday()
+        is_working_day = weekday < 5 and not holiday_name
+        if(is_working_day):
+            yy, mm, dd = current_time.year,current_time.month,current_time.day
+            for user in users:
+                
+                latest_time = datetime(yy, mm, dd, hour=23,minute=55,second=0)
+                score = self._get_score(user, latest_time, "없음")
+                self._update_csv(current_time, user, latest_time, "없음", score, is_empty_checker=True)
+        return
 
     def check_in(self, user, option = "없음", is_custom = False, custom_hh=0, custom_mm=0):
         '''
@@ -144,4 +163,7 @@ class CSVEditor():
 
         logger.info(msg)
         return msg
-    
+if __name__ == "__main__":
+    logger.info("daily_check_in_auto is running...")
+    ceditor = CSVEditor()
+    ceditor.daily_check_in_auto(constants.USERS)
