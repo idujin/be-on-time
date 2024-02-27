@@ -1,12 +1,12 @@
 import logging
 
+import altair as alt
 import gradio as gr
-from gspread_editor import GSpreadEditor
-import gspread
-
 import constants
-from dateman import DateManager
+from csv_editor import CSVEditor
 
+from dateman import DateManager
+from display import *
 
 # Enable logging
 logging.basicConfig(
@@ -15,12 +15,20 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-# Authenticate with Google and get the sheet
-gc, authorized_user = gspread.oauth_from_dict(constants.GSPREAD_CREDENTIAL, constants.GSPREAD_AUTH_USER)
-sh = gc.open_by_url(constants.GSPREAD_URL)
-
 dateman = DateManager()
-geditor = GSpreadEditor()
+ceditor = CSVEditor()
+
+with gr.Blocks() as log_demo:
+    
+    users = constants.USERS
+    data_radio = gr.Radio(choices= users, label="점수 확인하기", info="사용자를 선택하세요.", interactive=True, value="유진")
+    selcted_user = alt.selection_point(encodings=['color'])
+    
+    plot = gr.Plot(value = make_plot(users,except_user=["애리"]), label="Plot", scale=1)
+    df = display_dataframe(data_radio.value)
+    data_radio.change(display_dataframe, inputs=[data_radio],outputs=[df])
+
+    logger.info("Launching Leader board...")
 
 with gr.Blocks() as demo:
     gr.Markdown(
@@ -43,7 +51,7 @@ with gr.Blocks() as demo:
             btn = gr.Button(name, scale=2)
             button_dict[api_name]= btn
 
-
+    test_result = gr.Textbox(label="", placeholder= "Welcome!")
     excuse_radio = gr.Radio(["없음", "운동", "재택", "연차"], label="개인사유", info="다른 사정이라도 있으셨나요?")
 
     with gr.Column():
@@ -51,17 +59,21 @@ with gr.Blocks() as demo:
         with gr.Row():
             custom_hour = gr.Number(label="HH", minimum= 0, maximum=24)
             custom_minute = gr.Number(label="MM", minimum= 0, maximum=60)
-    test_result = gr.Textbox(label="", placeholder= "Welcome!")
 
     for api_name, btn in button_dict.items():
         inputs =[btn, excuse_radio]
         if custom_checker:
             inputs += [custom_checker, custom_hour, custom_minute]
         btn.click(
-            geditor.check_in,
+            ceditor.check_in,
             inputs=inputs,
             outputs=[test_result],
             api_name=api_name)
 
+    logger.info("Launching Check-in...")
+
+pages = gr.TabbedInterface([demo, log_demo], ["Check-in", "Leader board"])
+
+if __name__ == "__main__":
     logger.info("Launching...")
-    demo.launch(server_name="0.0.0.0", auth=(constants.USER_ID, constants.PASSWORD))
+    pages.launch()
