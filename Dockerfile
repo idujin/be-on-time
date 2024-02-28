@@ -8,7 +8,7 @@ ENV GRADIO_SERVER_PORT=${GRADIO_SERVER_PORT}
 
 WORKDIR /workspace
 
-ADD *.py requirements.txt /workspace/
+ADD *.py requirements.txt *.csv /workspace/
 
 RUN pip install --no-cache-dir -r /workspace/requirements.txt
 
