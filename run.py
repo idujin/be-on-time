@@ -3,6 +3,7 @@ import logging
 import altair as alt
 import gradio as gr
 import constants
+import private
 from csv_editor import CSVEditor
 
 from dateman import DateManager
@@ -76,4 +77,4 @@ pages = gr.TabbedInterface([demo, log_demo], ["Check-in", "Leader board"])
 
 if __name__ == "__main__":
     logger.info("Launching...")
-    pages.launch(server_name="0.0.0.0", auth=(constants.USER_ID, constants.PASSWORD))
+    pages.launch(server_name="0.0.0.0", auth=(private.USER_ID, private.PASSWORD))
