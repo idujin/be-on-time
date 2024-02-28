@@ -17,8 +17,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class CSVEditor():
-    def __init__(self):
-        self.dateman = DateManager()
+    def __init__(self, date_manager : DateManager):
+        self.dateman = date_manager
 
     def _create_new_csv(self, user):
         '''

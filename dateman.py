@@ -6,23 +6,21 @@ import numpy as np
 import requests
 from pandas import json_normalize
 
-import private
-
 logging.basicConfig(
     level=logging.INFO
 )
 
 logger = logging.getLogger(__name__)
 
-DATE_TO_KEY = private.DATE_TO_KEY
+
 DATE_URL = 'http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo?_type=json&numOfRows=50&solYear='
 
 class DateManager():
     """
     Manages date-related information in Korean
     """
-    def __init__(self):
-        self.key = DATE_TO_KEY
+    def __init__(self, date_to_key: str):
+        self.key = date_to_key
         self.url_base = DATE_URL
         self.holidays_frame = None
         self.last_updated ="2023-01-01"
