@@ -6,7 +6,7 @@ import numpy as np
 import requests
 from pandas import json_normalize
 
-import constants
+import private
 
 logging.basicConfig(
     level=logging.INFO
@@ -14,7 +14,7 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-DATE_TO_KEY = constants.DATE_TO_KEY
+DATE_TO_KEY = private.DATE_TO_KEY
 DATE_URL = 'http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo?_type=json&numOfRows=50&solYear='
 
 class DateManager():

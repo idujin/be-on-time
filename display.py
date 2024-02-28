@@ -6,7 +6,7 @@ ceditor = CSVEditor()
 
 def display_dataframe(user):
     if user:
-        return gr.DataFrame(label="CSV", value= ceditor.get_display_csv(user))
+        return gr.DataFrame(value= ceditor.get_display_csv(user))
     return gr.DataFrame([])
     
 def make_plot(users, except_user = None):
