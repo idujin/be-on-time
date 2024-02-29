@@ -29,7 +29,7 @@ with gr.Blocks() as log_demo:
     data_radio = gr.Radio(choices= users, label="점수 확인하기", info="사용자를 선택하세요.", interactive=True, value="유진")
     selcted_user = alt.selection_point(encodings=['color'])
 
-    plot = gr.Plot(value = make_plot(users, except_user=["애리"]), label="Plot", scale=1)
+    plot = gr.Plot(value = make_plot(users, inactive_user=constants.INACTIVE), label="Plot", scale=1)
     df = display_dataframe(data_radio.value)
     data_radio.change(display_dataframe, inputs=[data_radio],outputs=[df])
 
