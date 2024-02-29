@@ -1,10 +1,11 @@
 import logging
+import os
 
 import altair as alt
 import gradio as gr
 import constants
-from csv_editor import CSVEditor
 
+from csv_editor import CSVEditor
 from dateman import DateManager
 from display import *
 
@@ -15,16 +16,20 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-dateman = DateManager()
-ceditor = CSVEditor()
+DATE_TO_KEY = os.getenv("DATE_TO_KEY")
+if DATE_TO_KEY is None:
+    logger.error("DATE_TO_KEY must be set as environment variable.")
+    exit(1)
+
+dateman = DateManager(DATE_TO_KEY)
+ceditor = CSVEditor(dateman)
 
 with gr.Blocks() as log_demo:
-    
     users = constants.USERS
     data_radio = gr.Radio(choices= users, label="점수 확인하기", info="사용자를 선택하세요.", interactive=True, value="유진")
     selcted_user = alt.selection_point(encodings=['color'])
-    
-    plot = gr.Plot(value = make_plot(users,except_user=["애리"]), label="Plot", scale=1)
+
+    plot = gr.Plot(value = make_plot(users, except_user=["애리"]), label="Plot", scale=1)
     df = display_dataframe(data_radio.value)
     data_radio.change(display_dataframe, inputs=[data_radio],outputs=[df])
 
@@ -75,5 +80,17 @@ with gr.Blocks() as demo:
 pages = gr.TabbedInterface([demo, log_demo], ["Check-in", "Leader board"])
 
 if __name__ == "__main__":
+    # get env variables
+    GRADIO_USER_ID = os.getenv("GRADIO_USER_ID")
+    GRADIO_PASSWORD = os.getenv("GRADIO_PASSWORD")
+
+    if GRADIO_USER_ID is None or GRADIO_PASSWORD is None:
+        logger.warning("GRADIO_USER_ID or GRADIO_PASSWORD is not set as environment variable.")
+        auth = None
+    else:
+        auth = (GRADIO_USER_ID, GRADIO_PASSWORD)
+
+    SERVER_NAME = os.getenv("SERVER_NAME")
+
     logger.info("Launching...")
-    pages.launch(server_name="0.0.0.0", auth=(constants.USER_ID, constants.PASSWORD))
+    pages.launch(server_name=SERVER_NAME, auth=auth)
