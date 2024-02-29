@@ -1,10 +1,11 @@
 '''
 '''
-import os
 from datetime import datetime, timedelta
-import pandas as pd
 import logging
+import os
+
 import numpy as np
+import pandas as pd
 
 import constants
 from dateman import DateManager
@@ -26,7 +27,7 @@ class CSVEditor():
         Make sure this function should be called when creating a new file. Otherwise, an existed file will be replaced with new empty file.
 
         '''
-        
+
         file_name = user + '.csv'
         column_info =[("year"),("month"),("day"),("time"),("excuse"),("score")]
         df = pd.DataFrame(columns=column_info)
@@ -37,7 +38,7 @@ class CSVEditor():
         if not os.path.isfile(file_name):
             self._create_new_csv(user)
         return pd.read_csv(file_name, index_col = [0])
-    
+
     def _get_score(self, user, checkin_datetime: datetime, excuse: str)-> int:
         score = -20
         yy, mm, dd = checkin_datetime.year,checkin_datetime.month,checkin_datetime.day
@@ -68,7 +69,7 @@ class CSVEditor():
             mean_score = np.round(np.mean(last_month_data.values))
         else:
             mean_score = 0
-        
+
         return mean_score
 
     def _update_csv(self, today: datetime, user:str, time:str, excuse:str, score:int, is_empty_checker = False):
@@ -89,7 +90,7 @@ class CSVEditor():
         year = datetime.now().date().year
         month = datetime.now().date().month
         return df[np.logical_and(df['year']==year, df['month']==month)]
-    
+
     def get_current_score_dataframe(self, users, except_user = None):
         scores = np.array([])
         for user in users:
@@ -97,14 +98,14 @@ class CSVEditor():
             if except_user is None or not user in except_user:
                 sc = np.sum(self.get_user_month_score(user))
             scores = np.append(scores, sc)
-        
+
         if except_user is not None:
             mean_score = np.round(np.sum(scores)/(len(users)-len(except_user)))
             for i, user in enumerate(users):
                 if user in except_user:
                     scores[i] = mean_score
         return pd.DataFrame({ 'User': users, 'Score': scores })
-    
+
     def get_user_month_score(self, user, month: int=0):
         df = self._get_csv(user)
         year = datetime.now().date().year
@@ -115,7 +116,7 @@ class CSVEditor():
             return
         score = df[np.logical_and(df['year']==year, df['month']==month)]['score'].values
         return score
-    
+
     def daily_check_in_auto(self, users):
         '''
         This function is called every at 11:55 PM.
@@ -128,7 +129,7 @@ class CSVEditor():
         if(is_working_day):
             yy, mm, dd = current_time.year,current_time.month,current_time.day
             for user in users:
-                
+
                 latest_time = datetime(yy, mm, dd, hour=23,minute=55,second=0)
                 score = self._get_score(user, latest_time, "없음")
                 self._update_csv(current_time, user, latest_time, "없음", score, is_empty_checker=True)
@@ -139,7 +140,7 @@ class CSVEditor():
         '''
 
         current_time = datetime.now()
- 
+
         if(is_custom):
             current_time = current_time.replace(hour=int(custom_hh),minute=int(custom_mm),second=0)
         check_in_time = current_time.time().strftime("%H:%M:%S")
@@ -165,5 +166,13 @@ class CSVEditor():
         return msg
 if __name__ == "__main__":
     logger.info("daily_check_in_auto is running...")
-    ceditor = CSVEditor()
+
+    DATE_TO_KEY = os.getenv("DATE_TO_KEY")
+    if DATE_TO_KEY is None:
+        logger.error("DATE_TO_KEY must be set as environment variable.")
+        exit(1)
+
+    dateman = DateManager(DATE_TO_KEY)
+    ceditor = CSVEditor(dateman)
     ceditor.daily_check_in_auto(constants.USERS)
+
