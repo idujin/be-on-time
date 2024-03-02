@@ -22,8 +22,8 @@ def display_dataframe(user):
         return gr.DataFrame(value= ceditor.get_display_csv(user))
     return gr.DataFrame([])
 
-def make_plot(users, inactive_user = None):
-    scores_df = ceditor.get_current_score_dataframe(users,inactive_user)
+def make_plot(users, inactive_users = None):
+    scores_df = ceditor.get_current_score_dataframe(users,inactive_users)
 
     bar = alt.Chart(scores_df).mark_bar().encode(
     y='User',
