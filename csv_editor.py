@@ -130,7 +130,9 @@ class CSVEditor():
             yy, mm, dd = current_time.year,current_time.month,current_time.day
             active_users = users.copy()
             if inactive_users is not None:
-                active_users = [i for i in active_users if i not in inactive_users]
+                for u in inactive_users:
+                    active_users.remove(u)
+
             for user in active_users:
                 latest_time = datetime(yy, mm, dd, hour=23,minute=55,second=0)
                 score = self._get_score(user, latest_time, "없음")
