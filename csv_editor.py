@@ -85,18 +85,20 @@ class CSVEditor():
             df.iloc[-1] = new_log
             df.to_csv(file_name, header =True, mode='w')
 
-    def get_display_csv(self, user):
+    def get_display_csv(self, user, year: int=0, month: int=0):
         df = self._get_csv(user)
-        year = datetime.now().date().year
-        month = datetime.now().date().month
+        if year == 0:
+            year = datetime.now().date().year
+        if month == 0:
+            month = datetime.now().date().month
         return df[np.logical_and(df['year']==year, df['month']==month)]
 
-    def get_current_score_dataframe(self, users, inactive_users = None):
+    def get_current_score_dataframe(self, users, inactive_users = None, year: int=0, month: int=0):
         scores = np.array([])
         for user in users:
             sc = 0
             if inactive_users is None or not user in inactive_users:
-                sc = np.sum(self.get_user_month_score(user))
+                sc = np.sum(self.get_user_month_score(user, year, month))
             scores = np.append(scores, sc)
 
         if inactive_users is not None:
@@ -106,9 +108,14 @@ class CSVEditor():
                     scores[i] = mean_score
         return pd.DataFrame({ 'User': users, 'Score': scores })
 
-    def get_user_month_score(self, user, month: int=0):
+    def get_user_month_score(self, user, year: int = 0, month: int=0):
         df = self._get_csv(user)
-        year = datetime.now().date().year
+        if year == 0:
+            year = datetime.now().date().year
+        elif year < 0 or year > datetime.now().date().year:
+            logger.error("Invalid %d year input", year)
+            return
+        
         if month == 0:
             month = datetime.now().date().month
         elif month < 0 or month > 12:

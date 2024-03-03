@@ -23,15 +23,23 @@ if DATE_TO_KEY is None:
 
 dateman = DateManager(DATE_TO_KEY)
 ceditor = CSVEditor(dateman)
+dispman = DisplayManger(constants.USERS, constants.INACTIVE_USERS)
 
 with gr.Blocks() as log_demo:
     users = constants.USERS
     data_radio = gr.Radio(choices= users, label="점수 확인하기", info="사용자를 선택하세요.", interactive=True, value="유진")
     selcted_user = alt.selection_point(encodings=['color'])
+    with gr.Row():
+        btn_left = gr.Button("<", scale=2)
+        label_month = gr.Markdown(""" ###  {}/{} """.format(dispman.display_year,dispman.display_month))
+        btn_right = gr.Button(">", scale=2)
 
-    plot = gr.Plot(value = make_plot(users, inactive_users=constants.INACTIVE_USERS), label="Plot", scale=1)
-    df = display_dataframe(data_radio.value)
-    data_radio.change(display_dataframe, inputs=[data_radio],outputs=[df])
+    plot = gr.Plot(value = dispman.make_plot(users), label="Plot", scale=1)
+    df = dispman.display_dataframe(data_radio.value)
+    data_radio.change(dispman.display_dataframe, inputs=[data_radio],outputs=[df])
+
+    btn_left.click(dispman.make_plot_search,inputs=[btn_left], outputs=[plot, label_month])
+    btn_right.click(dispman.make_plot_search,inputs=[btn_right], outputs=[plot, label_month])
 
     logger.info("Launching Leader board...")
 
