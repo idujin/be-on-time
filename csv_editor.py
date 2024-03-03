@@ -91,18 +91,18 @@ class CSVEditor():
         month = datetime.now().date().month
         return df[np.logical_and(df['year']==year, df['month']==month)]
 
-    def get_current_score_dataframe(self, users, except_user = None):
+    def get_current_score_dataframe(self, users, inactive_users = None):
         scores = np.array([])
         for user in users:
             sc = 0
-            if except_user is None or not user in except_user:
+            if inactive_users is None or not user in inactive_users:
                 sc = np.sum(self.get_user_month_score(user))
             scores = np.append(scores, sc)
 
-        if except_user is not None:
-            mean_score = np.round(np.sum(scores)/(len(users)-len(except_user)))
+        if inactive_users is not None:
+            mean_score = np.round(np.sum(scores)/(len(users)-len(inactive_users)))
             for i, user in enumerate(users):
-                if user in except_user:
+                if user in inactive_users:
                     scores[i] = mean_score
         return pd.DataFrame({ 'User': users, 'Score': scores })
 
@@ -117,7 +117,7 @@ class CSVEditor():
         score = df[np.logical_and(df['year']==year, df['month']==month)]['score'].values
         return score
 
-    def daily_check_in_auto(self, users):
+    def daily_check_in_auto(self, users, inactive_users = None):
         '''
         This function is called every at 11:55 PM.
         If user did not check-in before that time, 23:55:00 would be filled at check-in time and the score also would be -20.
@@ -128,8 +128,12 @@ class CSVEditor():
         is_working_day = weekday < 5 and not holiday_name
         if(is_working_day):
             yy, mm, dd = current_time.year,current_time.month,current_time.day
-            for user in users:
+            active_users = users.copy()
+            if inactive_users is not None:
+                for u in inactive_users:
+                    active_users.remove(u)
 
+            for user in active_users:
                 latest_time = datetime(yy, mm, dd, hour=23,minute=55,second=0)
                 score = self._get_score(user, latest_time, "없음")
                 self._update_csv(current_time, user, latest_time, "없음", score, is_empty_checker=True)
@@ -174,5 +178,5 @@ if __name__ == "__main__":
 
     dateman = DateManager(DATE_TO_KEY)
     ceditor = CSVEditor(dateman)
-    ceditor.daily_check_in_auto(constants.USERS)
+    ceditor.daily_check_in_auto(constants.USERS, constants.INACTIVE_USERS)
 
