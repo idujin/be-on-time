@@ -29,12 +29,13 @@ with gr.Blocks() as log_demo:
     users = constants.USERS
     data_radio = gr.Radio(choices= users, label="점수 확인하기", info="사용자를 선택하세요.", interactive=True, value="유진")
     selcted_user = alt.selection_point(encodings=['color'])
-    with gr.Row():
-        btn_left = gr.Button("<", scale=2)
-        label_month = gr.Markdown(""" ###  {}/{} """.format(dispman.display_year,dispman.display_month))
-        btn_right = gr.Button(">", scale=2)
 
-    plot = gr.Plot(value = dispman.make_plot(users), label="Plot", scale=1)
+    with gr.Row():
+        btn_left = gr.Button("<", min_width=50)
+        label_month = gr.Markdown("""###    {}/{}""".format(dispman.display_year,dispman.display_month))
+        btn_right = gr.Button(">", min_width=50)
+
+    plot = gr.Plot(value = dispman.make_plot(users), scale=1)
     df = dispman.display_dataframe(data_radio.value)
     data_radio.change(dispman.display_dataframe, inputs=[data_radio],outputs=[df])
 
