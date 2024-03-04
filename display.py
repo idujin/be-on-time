@@ -3,6 +3,7 @@ import logging
 
 import gradio as gr
 import altair as alt
+from datetime import datetime
 
 from csv_editor import CSVEditor
 from dateman import DateManager
@@ -19,8 +20,8 @@ class DisplayManger():
     def __init__(self, users= None, inactive_users = None):
         self.dateman = DateManager(DATE_TO_KEY)
         self.ceditor = CSVEditor(self.dateman)
-        self.display_year = self.dateman.get_current_year()
-        self.display_month = self.dateman.get_current_month()
+        self.display_year = datetime.today().year
+        self.display_month = datetime.today().month
         self.users = users
         self.inactive_users = inactive_users
 

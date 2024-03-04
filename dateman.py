@@ -24,11 +24,7 @@ class DateManager():
         self.url_base = DATE_URL
         self.holidays_frame = None
         self.last_updated ="2023-01-01"
-    def get_current_year(self):
-        return datetime.today().year
-    def get_current_month(self):
-        return datetime.today().month
-    
+
     def _update_holidays(self):
         if self.last_updated == datetime.today().strftime('%Y-%m-%d'):
             return
