@@ -87,7 +87,7 @@ class CSVEditor():
 
     def get_display_csv(self, user, year: int = datetime.now().date().year, month: int=datetime.now().date().month):
         df = self._get_csv(user)
-
+        logger.info("Displaying %s's data for %d/%d", user, year, month)
         return df[np.logical_and(df['year']==year, df['month']==month)]
 
     def get_current_score_dataframe(self, users, inactive_users = None, year: int = datetime.now().date().year, month: int=datetime.now().date().month):
