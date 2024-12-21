@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python:3.11
 
 # mark it with a label, so we can remove dangling images
 LABEL cicd="be-on-time"
