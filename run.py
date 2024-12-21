@@ -47,7 +47,9 @@ with gr.Blocks() as log_demo:
 with gr.Blocks() as demo:
     gr.Markdown(
         """
-    # ALMOST DONE TODAY!
+    🎄🎄🎄🎄🎅🏻🎄🎄🎄🎄
+    #  Merry Christmas! 
+    한 해 동안 수고 많으셨습니다!  
     본인 이름 버튼을 눌러서 출근 기록을 남겨주세요.
 
     """
