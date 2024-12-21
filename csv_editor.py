@@ -63,10 +63,11 @@ class CSVEditor():
         return score
     def _get_last_month_mean(self, user, today: datetime.date)->int:
         df = self._get_csv(user)
-        last_month= int(today.replace(day = 1) - timedelta(days=1))
+        last_month= (today.replace(day = 1) - timedelta(days=1)).month
         last_month_data = df[df['month']==last_month]
+        
         if len(last_month_data) > 0:
-            mean_score = np.round(np.mean(last_month_data.values))
+            mean_score = last_month_data['score'].mean().round(0)#np.round(np.mean(last_month_data.values))
         else:
             mean_score = 0
 
