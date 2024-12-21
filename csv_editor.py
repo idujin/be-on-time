@@ -67,7 +67,7 @@ class CSVEditor():
         last_month_data = df[df['month']==last_month]
         
         if len(last_month_data) > 0:
-            mean_score = last_month_data['score'].mean().round(0)#np.round(np.mean(last_month_data.values))
+            mean_score = last_month_data['score'].mean().round(0)
         else:
             mean_score = 0
 
