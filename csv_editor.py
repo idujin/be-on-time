@@ -163,7 +163,7 @@ class CSVEditor():
                     msg = f"{user}님은 오늘 {option}!"
                 else:
                     msg += f" {option} 점수가 추가되었어요."
-        elif(holiday_name):
+        elif(holiday_name.size > 0):
             msg = f"오늘은 {holiday_name}입니다. 집으로 돌아가세요!"
 
         logger.info(msg)
