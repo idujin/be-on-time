@@ -39,8 +39,8 @@ with gr.Blocks() as log_demo:
     df = dispman.display_dataframe(data_radio.value)
     data_radio.change(dispman.display_dataframe, inputs=[data_radio],outputs=[df])
 
-    btn_left.click(dispman.make_plot_search,inputs=[btn_left], outputs=[plot, label_month])
-    btn_right.click(dispman.make_plot_search,inputs=[btn_right], outputs=[plot, label_month])
+    btn_left.click(dispman.make_plot_search,inputs=[btn_left], outputs=[plot, df, label_month])
+    btn_right.click(dispman.make_plot_search,inputs=[btn_right], outputs=[plot, df, label_month])
 
     logger.info("Launching Leader board...")
 

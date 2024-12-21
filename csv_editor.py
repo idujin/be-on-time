@@ -96,7 +96,11 @@ class CSVEditor():
         for user in users:
             sc = 0
             if inactive_users is None or not user in inactive_users:
-                sc = np.sum(self.get_user_month_score(user, year, month))
+                score_ret = self.get_user_month_score(user, year, month)
+                if score_ret is not None:
+                    sc = np.sum(score_ret)
+                else:
+                    return None
             scores = np.append(scores, sc)
 
         if inactive_users is not None:
@@ -108,13 +112,17 @@ class CSVEditor():
 
     def get_user_month_score(self, user, year: int = datetime.now().date().year, month: int=datetime.now().date().month):
         df = self._get_csv(user)
-        if year < 0 or year > datetime.now().date().year:
+        min_year = df.loc[:,"year"].min()
+        max_year = df.loc[:,"year"].max()
+        if year < min_year or year > max_year:
             logger.error("Invalid %d year input", year)
-            return
-        
-        if month < 0 or month > 12:
+            return None
+        min_month = df[df['year']==min_year]['month'].min()
+        max_month = df[df['year']==max_year]['month'].max()
+
+        if month < min_month or month > max_month:
             logger.error("Invalid %d month input", month)
-            return
+            return None
         score = df[np.logical_and(df['year']==year, df['month']==month)]['score'].values
         return score
 
