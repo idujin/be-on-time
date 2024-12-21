@@ -3,3 +3,4 @@ gspread
 numpy
 requests
 pandas
+altair
