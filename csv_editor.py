@@ -160,7 +160,7 @@ class CSVEditor():
 
         holiday_name = self.dateman.get_holiday_name_kr()
         weekday = current_time.date().weekday()
-        is_working_day = weekday < 5 and not holiday_name
+        is_working_day = weekday < 5 and holiday_name.size == 0
 
         msg = f"{user}님, 오늘은 주말입니다. 집으로 돌아가세요!"
         if(is_working_day):
