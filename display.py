@@ -68,6 +68,6 @@ class DisplayManger():
             return None
         bar = alt.Chart(scores_df).mark_bar().encode(
         y='User',
-        x='Score').properties(width = 500)
+        x='Score').properties(width = 500).configure_view(strokeOpacity=0).interactive()
 
         return bar
