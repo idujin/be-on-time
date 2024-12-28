@@ -8,6 +8,7 @@ import constants
 from csv_editor import CSVEditor
 from dateman import DateManager
 from display import *
+from summarizer import *
 
 # Enable logging
 logging.basicConfig(
@@ -27,8 +28,21 @@ dispman = DisplayManger(constants.USERS, constants.INACTIVE_USERS)
 
 with gr.Blocks() as log_demo:
     users = constants.USERS
-    data_radio = gr.Radio(choices= users, label="점수 확인하기", info="사용자를 선택하세요.", interactive=True, value="유진")
+    init_user = users[0]
+    data_radio = gr.Radio(choices= users, label="2024 점수 확인하기", info="사용자를 선택하세요.", interactive=True, value=init_user)
     selcted_user = alt.selection_point(encodings=['color'])
+    stats_text_init, month_plot_init, week_plot_init = display_user_data(init_user)
+
+    stats_text = gr.Markdown(stats_text_init)
+    with gr.Row():
+        monthly_plot = gr.Plot(value=month_plot_init, scale=1)
+        weekday_plot = gr.Plot(value=week_plot_init, scale=1)
+
+    data_radio.change(
+        display_user_data,
+        inputs=[data_radio],
+        outputs=[stats_text, monthly_plot, weekday_plot]
+    )
 
     with gr.Row():
         btn_left = gr.Button("<", min_width=50)
