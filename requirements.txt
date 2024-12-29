@@ -4,3 +4,4 @@ numpy
 requests
 pandas
 altair
+matplotlib

@@ -1,8 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
-import gradio as gr
-import os
 
 # Function to process work log and return average times, plots, and stats
 def process_work_log(file_path, user):
