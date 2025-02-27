@@ -116,13 +116,13 @@ class CSVEditor():
         max_year = df.loc[:,"year"].max()
         if year < min_year or year > max_year:
             logger.error("Invalid %d year input", year)
-            return None
-        min_month = df[df['year']==min_year]['month'].min()
-        max_month = df[df['year']==max_year]['month'].max()
+            return [0]
+        min_month = df[df['year']==year]['month'].min()
+        max_month = df[df['year']==year]['month'].max()
 
         if month < min_month or month > max_month:
             logger.error("Invalid %d month input", month)
-            return None
+            return [0]
         score = df[np.logical_and(df['year']==year, df['month']==month)]['score'].values
         return score
 
