@@ -52,8 +52,21 @@ class DateManager():
         self._update_holidays()
 
         today = datetime.today().strftime('%Y%m%d')
-        data_frame = self.holidays_frame.loc[self.holidays_frame['locdate'] == int(today), 'dateName']
-        return data_frame.values
+        holiday_name = ""
+
+        if self.holidays_frame is None:
+            logger.warning("holidays_frame is None.")
+            return holiday_name
+        
+        try:
+            data_frame = self.holidays_frame.loc[self.holidays_frame['locdate'] == int(today), 'dateName']
+            holiday_name = data_frame.values
+        except AttributeError as e:
+            logger.error("AttributeError occurred: %s", e)
+        except Exception as e:
+            logger.error("An unexpected error occurred: %s", e)
+        
+        return holiday_name
 
     def get_order_busday(self):
         """
